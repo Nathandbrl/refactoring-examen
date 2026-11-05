@@ -1,59 +1,73 @@
 package fr.efrei.residence;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Accès à la base de données (simulée en mémoire pour l'instant).
  */
-public class Database {
+public class Database implements EtudiantRepository, BailRepository {
 
-    private static Database instance;
+    private final Map<String, Etudiant> etudiants = new HashMap<>();
+    private final Map<String, Bail> baux = new HashMap<>();
 
-    public static Map<String, Etudiant> etudiants = new HashMap<String, Etudiant>();
-    public static Map<String, Bail> baux = new HashMap<String, Bail>();
-
-    private Database() {
+    public Database() {
         System.out.println("[DB] Connexion à jdbc:postgresql://db.campusvert.local:5432/residence");
-    }
-
-    public static Database getInstance() {
-        if (instance == null) {
-            instance = new Database();
-        }
-        return instance;
     }
 
     public void executer(String sql) {
         System.out.println("[SQL] " + sql);
     }
 
-    public void sauvegarderEtudiant(Etudiant e) {
-        executer("INSERT INTO etudiant (id, nom, email, profil) VALUES ('" + e.getId() + "', '" + e.getNom() + "', '" + e.getEmail() + "', '" + e.getProfil() + "')");
-        etudiants.put(e.getEmail(), e);
+    @Override
+    public void sauvegarder(Etudiant etudiant) {
+        executer("INSERT INTO etudiant (id, nom, email, profil) VALUES ('" + etudiant.getId() + "', '"
+                + etudiant.getNom() + "', '" + etudiant.getEmail() + "', '" + etudiant.getProfil() + "')");
+        etudiants.put(etudiant.getEmail(), etudiant);
     }
 
-    public Etudiant trouverEtudiantParEmail(String email) {
+    @Override
+    public Etudiant trouverParEmail(String email) {
         executer("SELECT * FROM etudiant WHERE email = '" + email + "'");
         return etudiants.get(email);
     }
 
-    public void sauvegarderBail(Bail b) {
-        executer("INSERT INTO bail (id, etudiant, logement, statut, loyer) VALUES ('" + b.getId() + "', '" + b.getEtudiant().getId() + "', '" + b.getLogement().getNumero() + "', '" + b.getStatut() + "', " + b.getLoyerChargesComprises() + ")");
-        baux.put(b.getId(), b);
+    @Override
+    public Etudiant trouverParId(String id) {
+        executer("SELECT * FROM etudiant WHERE id = '" + id + "'");
+        return etudiants.values().stream().filter(etudiant -> etudiant.getId().equals(id)).findFirst().orElse(null);
     }
 
-    public void mettreAJourBail(Bail b) {
-        executer("UPDATE bail SET statut = '" + b.getStatut() + "', solde = " + b.soldeDu + " WHERE id = '" + b.getId() + "'");
+    @Override
+    public Collection<Etudiant> tousLesEtudiants() {
+        return List.copyOf(etudiants.values());
     }
 
-    public Bail trouverBail(String id) {
+    @Override
+    public void sauvegarder(Bail bail) {
+        executer("INSERT INTO bail (id, etudiant, logement, statut, loyer) VALUES ('" + bail.getId() + "', '"
+                + bail.getEtudiant().getId() + "', '" + bail.getLogement().getNumero() + "', '"
+                + bail.getStatut() + "', " + bail.getLoyerChargesComprises() + ")");
+        baux.put(bail.getId(), bail);
+    }
+
+    @Override
+    public void mettreAJour(Bail bail) {
+        executer("UPDATE bail SET statut = '" + bail.getStatut() + "', solde = " + bail.soldeDu
+                + " WHERE id = '" + bail.getId() + "'");
+    }
+
+    @Override
+    public Optional<Bail> trouver(String id) {
         executer("SELECT * FROM bail WHERE id = '" + id + "'");
-        return baux.get(id);
+        return Optional.ofNullable(baux.get(id));
     }
 
+    @Override
     public List<Bail> tousLesBaux() {
         executer("SELECT * FROM bail");
         List<Bail> liste = new ArrayList<Bail>(baux.values());

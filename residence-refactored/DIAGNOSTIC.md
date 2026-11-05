@@ -9,3 +9,5 @@
 | L'interface de logement regroupe les opérations de colocation, de balcon et d'entretien, inutiles à la plupart des appelants. | `ILogement` | Ségrégation des interfaces (I) |
 
 Au palier 1, les codes de profils, canaux, types de logement, statuts et options sont représentés par des enums dans le module refactoré. Les valeurs métier utilisées pour les calculs et les validations sont nommées dans les classes qui les appliquent. Au palier 3, les règles liées aux profils sont regroupées dans `StrategieProfil` et celles liées aux types de logement dans `StrategieLoyerType`. Au palier 4, les couches du loyer sont représentées par des décorateurs et assemblées dans `AssemblageLoyer`.
+
+Au palier 5, `GestionResidence` délègue à des services spécialisés, les accès aux données passent par des interfaces de dépôt et le graphe de dépendances est construit dans `ContexteResidence`. Les états précédemment partagés sont désormais liés aux instances, et la génération des quittances est confiée à `GenerateurQuittance`.

@@ -61,7 +61,8 @@ class DecorateurLoyerTest {
     @Test
     void assemblageAppliqueLaRemiseApresLesOptions() {
         Logement logement = new T1("T101", 30, 1, false);
-        AssemblageLoyer assemblage = new AssemblageLoyer();
+        AssemblageLoyer assemblage = new AssemblageLoyer(new FabriqueStrategieLoyer(),
+                new FabriqueStrategieProfil());
         double loyer = assemblage.calculer(logement, ProfilEtudiant.BOURSIER, 2,
                 EnumSet.of(OptionLogement.MENAGE, OptionLogement.PARKING));
 
