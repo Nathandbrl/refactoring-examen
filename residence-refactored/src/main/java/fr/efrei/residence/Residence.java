@@ -7,7 +7,7 @@ import java.util.Optional;
 /**
  * Le parc de logements de la résidence.
  */
-public class Residence {
+public class Residence implements LogementRepository {
 
     private static final int INDEX_TYPE = 0;
     private static final int INDEX_NUMERO = 1;
@@ -19,7 +19,7 @@ public class Residence {
     public static final String NOM = "Résidence Campus Vert";
 
     // TYPE;NUMERO;SURFACE;ETAGE;MEUBLE;PARAM (PARAM = nb de places en coloc, surface du balcon en T2)
-    public static final String[] CATALOGUE = {
+    public static final List<String> CATALOGUE = List.of(
             "STUDIO;A001;26;0;true;0",
             "STUDIO;A102;22;1;true;0",
             "STUDIO;B103;20;1;false;0",
@@ -28,13 +28,16 @@ public class Residence {
             "T2;A201;45;2;false;6",
             "T2;B202;48;2;true;0",
             "COLOCATION;B301;80;3;true;4",
-            "COLOCATION;C001;63;0;true;3",
-    };
+            "COLOCATION;C001;63;0;true;3");
 
-    public static List<Logement> logements = new ArrayList<Logement>();
+    private final List<Logement> logements = new ArrayList<>();
+    private final FabriqueLogement fabriqueLogement;
 
-    public static void initialiser() {
-        FabriqueLogement fabrique = new FabriqueLogement();
+    public Residence(FabriqueLogement fabriqueLogement) {
+        this.fabriqueLogement = fabriqueLogement;
+    }
+
+    public void initialiser() {
         logements.clear();
         for (String ligne : CATALOGUE) {
             String[] t = ligne.split(";");
@@ -48,14 +51,25 @@ public class Residence {
                 System.out.println("Type inconnu ignoré : " + t[INDEX_TYPE]);
                 continue;
             }
-            logements.add(fabrique.creer(type.get(), numero, surface, etage, meuble, param));
+            ajouter(fabriqueLogement.creer(type.get(), numero, surface, etage, meuble, param));
         }
     }
 
-    public static Logement trouver(String numero) {
+    @Override
+    public void ajouter(Logement logement) {
+        logements.add(logement);
+    }
+
+    @Override
+    public Optional<Logement> trouver(String numero) {
         for (Logement l : logements) {
-            if (l.getNumero().equals(numero)) return l;
+            if (l.getNumero().equals(numero)) return Optional.of(l);
         }
-        return null;
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Logement> tousLesLogements() {
+        return List.copyOf(logements);
     }
 }

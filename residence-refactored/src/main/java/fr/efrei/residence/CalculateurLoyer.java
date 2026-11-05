@@ -4,8 +4,13 @@ import java.util.Set;
 
 public class CalculateurLoyer {
 
-    private final FabriqueStrategieLoyer fabriqueStrategieLoyer = new FabriqueStrategieLoyer();
-    private final AssemblageLoyer assemblageLoyer = new AssemblageLoyer();
+    private final FabriqueStrategieLoyer fabriqueStrategieLoyer;
+    private final AssemblageLoyer assemblageLoyer;
+
+    public CalculateurLoyer(FabriqueStrategieLoyer fabriqueStrategieLoyer, AssemblageLoyer assemblageLoyer) {
+        this.fabriqueStrategieLoyer = fabriqueStrategieLoyer;
+        this.assemblageLoyer = assemblageLoyer;
+    }
 
     /**
      * Loyer mensuel hors charges, options comprises, remise déduite.

@@ -11,4 +11,8 @@ public interface StrategieLoyerType {
     double charges();
 
     void ajouterOccupation(Logement logement, CompteursOccupation compteurs);
+
+    default double surfaceBalcon(Logement logement) {
+        return 0;
+    }
 }

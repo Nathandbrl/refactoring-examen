@@ -6,8 +6,14 @@ public class AssemblageLoyer {
 
     private static final int ETAGE_REZ_DE_CHAUSSEE = 0;
 
-    private final FabriqueStrategieLoyer fabriqueStrategieLoyer = new FabriqueStrategieLoyer();
-    private final FabriqueStrategieProfil fabriqueStrategieProfil = new FabriqueStrategieProfil();
+    private final FabriqueStrategieLoyer fabriqueStrategieLoyer;
+    private final FabriqueStrategieProfil fabriqueStrategieProfil;
+
+    public AssemblageLoyer(FabriqueStrategieLoyer fabriqueStrategieLoyer,
+                          FabriqueStrategieProfil fabriqueStrategieProfil) {
+        this.fabriqueStrategieLoyer = fabriqueStrategieLoyer;
+        this.fabriqueStrategieProfil = fabriqueStrategieProfil;
+    }
 
     public double calculer(Logement logement, ProfilEtudiant profil, int echelonBourse,
                            Set<OptionLogement> options) {

@@ -30,27 +30,16 @@ import java.util.Set;
  */
 public class NouveauSystemeAdapter implements SystemeResidence {
 
-    private GestionResidence gestion;
+    private ContexteResidence contexte;
 
     @Override
     public void reinitialiser() {
-        Database.getInstance();
-        Database.etudiants.clear();
-        Database.baux.clear();
-        EmailService.journal.clear();
-        SmsService.journal.clear();
-        CourrierService.journal.clear();
-        SmsService.compteurSms = 0;
-        CourrierService.totalAffranchissement = 0;
-        Etudiant.compteur = 0;
-        GestionResidence.compteurBail = 0;
-        Residence.initialiser();
-        gestion = new GestionResidence();
+        contexte = new ContexteResidence();
     }
 
     @Override
     public Optional<String> inscrire(DemandeInscription d) {
-        Etudiant e = gestion.inscrireEtudiant(d.nom(), d.prenom(), d.email(), d.telephone(), d.adresse(),
+        Etudiant e = contexte.gestionResidence().inscrireEtudiant(d.nom(), d.prenom(), d.email(), d.telephone(), d.adresse(),
                 ProfilEtudiant.valueOf(d.profil().name()), d.echelonBourse(), d.ressourcesMensuelles(), d.pmr(),
                 CanalNotification.valueOf(d.canalPrefere().name()));
         return Optional.ofNullable(e).map(Etudiant::getId);
@@ -59,52 +48,47 @@ public class NouveauSystemeAdapter implements SystemeResidence {
     @Override
     public boolean ajouterLogement(DemandeLogement d) {
         int param = d.type() == TypeLogement.COLOCATION ? d.places() : d.surfaceBalcon();
-        return gestion.ajouterLogement(TypeLogementInterne.valueOf(d.type().name()), d.numero(), d.surface(),
+        return contexte.gestionResidence().ajouterLogement(TypeLogementInterne.valueOf(d.type().name()), d.numero(), d.surface(),
                 d.etage(), d.meuble(), param) != null;
     }
 
     @Override
     public Optional<EtatLogement> logement(String numero) {
-        Logement l = Residence.trouver(numero);
+        Logement l = contexte.residence().trouver(numero).orElse(null);
         if (l == null) {
             return Optional.empty();
         }
-        int occupants;
-        if (l instanceof Colocation) {
-            occupants = l.getColocataires().size();
-        } else {
-            occupants = l.estLibre() ? 0 : 1;
-        }
+        int occupants = l.getNombreOccupants();
         return Optional.of(new EtatLogement(l.getNumero(), TypeLogement.valueOf(l.getType().name()), l.getNombrePlaces(),
                 occupants, l.estAccessiblePMR()));
     }
 
     @Override
     public OptionalDouble devisLoyer(DemandeDevis d) {
-        Logement l = Residence.trouver(d.numeroLogement());
+        Logement l = contexte.residence().trouver(d.numeroLogement()).orElse(null);
         if (l == null) {
             return OptionalDouble.empty();
         }
         Set<OptionLogement> options = convertirOptions(d.options());
-        return OptionalDouble.of(new CalculateurLoyer().calculerLoyer(l,
+        return OptionalDouble.of(contexte.calculateurLoyer().calculerLoyer(l,
                 ProfilEtudiant.valueOf(d.profil().name()), d.echelonBourse(), options));
     }
 
     @Override
     public Optional<String> attribuer(DemandeAttribution d) {
-        Etudiant e = etudiant(d.refEtudiant());
+        Etudiant e = contexte.database().trouverParId(d.refEtudiant());
         if (e == null) {
             return Optional.empty();
         }
         Set<OptionLogement> options = convertirOptions(d.options());
-        Bail b = gestion.attribuerLogement(e, TypeLogementInterne.valueOf(d.type().name()), options,
+        Bail b = contexte.gestionResidence().attribuerLogement(e, TypeLogementInterne.valueOf(d.type().name()), options,
                 d.dateSignature());
         return Optional.ofNullable(b).map(Bail::getId);
     }
 
     @Override
     public Optional<EtatBail> consulter(String idBail) {
-        Bail b = Database.baux.get(idBail);
+        Bail b = contexte.database().trouver(idBail).orElse(null);
         if (b == null) {
             return Optional.empty();
         }
@@ -116,64 +100,55 @@ public class NouveauSystemeAdapter implements SystemeResidence {
 
     @Override
     public boolean entrer(String idBail, LocalDate date) {
-        return gestion.entrerDansLesLieux(idBail, date);
+        return contexte.gestionResidence().entrerDansLesLieux(idBail, date);
     }
 
     @Override
     public boolean payer(String idBail, YearMonth mois, LocalDate date, double montant) {
-        return gestion.payerLoyer(idBail, mois.toString(), date, montant);
+        return contexte.gestionResidence().payerLoyer(idBail, mois.toString(), date, montant);
     }
 
     @Override
     public boolean donnerPreavis(String idBail, LocalDate date) {
-        return gestion.donnerPreavis(idBail, date);
+        return contexte.gestionResidence().donnerPreavis(idBail, date);
     }
 
     @Override
     public boolean sortir(String idBail, LocalDate date, double retenuesDegats) {
-        return gestion.sortir(idBail, date, retenuesDegats);
+        return contexte.gestionResidence().sortir(idBail, date, retenuesDegats);
     }
 
     @Override
     public boolean annuler(String idBail) {
-        return gestion.annulerBail(idBail);
+        return contexte.gestionResidence().annulerBail(idBail);
     }
 
     @Override
     public Optional<String> quittance(String idBail, YearMonth mois) {
-        return Optional.ofNullable(Database.baux.get(idBail)).map(b -> b.genererQuittance(mois.toString()));
+        return Optional.ofNullable(contexte.gestionResidence().genererQuittance(idBail, mois.toString()));
     }
 
     @Override
     public void relancerImpayes() {
-        gestion.relancerImpayes();
+        contexte.gestionResidence().relancerImpayes();
     }
 
     @Override
     public String rapport() {
-        return gestion.genererRapport();
+        return contexte.gestionResidence().genererRapport();
     }
 
     @Override
     public List<Notification> notifications() {
         List<Notification> notifications = new ArrayList<>();
-        for (String[] email : EmailService.journal) {
-            notifications.add(new Notification(Canal.EMAIL, email[0], email[1]));
-        }
-        for (String[] sms : SmsService.journal) {
-            notifications.add(new Notification(Canal.SMS, sms[0], sms[1]));
-        }
-        for (String[] courrier : CourrierService.journal) {
-            notifications.add(new Notification(Canal.COURRIER, courrier[0], courrier[1]));
+        for (Canal canal : Canal.values()) {
+            for (NotificationEnvoyee envoyee : contexte.historiqueNotifications().notifications()) {
+                if (envoyee.canal().name().equals(canal.name())) {
+                    notifications.add(new Notification(canal, envoyee.destinataire(), envoyee.sujet()));
+                }
+            }
         }
         return notifications;
-    }
-
-    private static Etudiant etudiant(String ref) {
-        for (Etudiant e : Database.etudiants.values()) {
-            if (e.getId().equals(ref)) return e;
-        }
-        return null;
     }
 
     private static Set<OptionLogement> convertirOptions(Set<Option> options) {

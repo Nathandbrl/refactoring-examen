@@ -28,6 +28,6 @@ public class StrategieLoyerColocation implements StrategieLoyerType {
 
     @Override
     public void ajouterOccupation(Logement logement, CompteursOccupation compteurs) {
-        compteurs.ajouterColocation(logement.getNombrePlaces(), logement.getColocataires().size());
+        compteurs.ajouterColocation(logement.getNombrePlaces(), logement.getNombreOccupants());
     }
 }

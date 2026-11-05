@@ -2,10 +2,6 @@ package fr.efrei.residence;
 
 public class Etudiant {
 
-    private static final String PREFIXE_ID = "ETU-";
-
-    public static int compteur = 0;
-
     private String id;
     private String nom;
     private String prenom;
@@ -18,10 +14,10 @@ public class Etudiant {
     private boolean pmr;
     private CanalNotification canalPrefere;
 
-    public Etudiant(String nom, String prenom, String email, String telephone, String adresse, ProfilEtudiant profil,
-                    int echelonBourse, double ressourcesMensuelles, boolean pmr, CanalNotification canalPrefere) {
-        compteur++;
-        this.id = PREFIXE_ID + compteur;
+    public Etudiant(String id, String nom, String prenom, String email, String telephone, String adresse,
+                    ProfilEtudiant profil, int echelonBourse, double ressourcesMensuelles, boolean pmr,
+                    CanalNotification canalPrefere) {
+        this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;

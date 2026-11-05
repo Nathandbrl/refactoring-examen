@@ -31,4 +31,9 @@ public class StrategieLoyerT2 implements StrategieLoyerType {
     public void ajouterOccupation(Logement logement, CompteursOccupation compteurs) {
         compteurs.ajouterT2(!logement.estLibre());
     }
+
+    @Override
+    public double surfaceBalcon(Logement logement) {
+        return logement.surfaceBalconPourRapport();
+    }
 }
