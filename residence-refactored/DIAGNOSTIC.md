@@ -8,4 +8,4 @@
 | Les logements partagent une interface imposant des opérations qu'ils ne prennent pas en charge, parfois via `UnsupportedOperationException`. | `ILogement`, `Studio`, `T1`, `T2`, `Colocation` | Substitution de Liskov (L) |
 | L'interface de logement regroupe les opérations de colocation, de balcon et d'entretien, inutiles à la plupart des appelants. | `ILogement` | Ségrégation des interfaces (I) |
 
-Au palier 1, les codes de profils, canaux, types de logement, statuts et options sont représentés par des enums dans le module refactoré. Les valeurs métier utilisées pour les calculs et les validations sont nommées dans les classes qui les appliquent.
+Au palier 1, les codes de profils, canaux, types de logement, statuts et options sont représentés par des enums dans le module refactoré. Les valeurs métier utilisées pour les calculs et les validations sont nommées dans les classes qui les appliquent. Au palier 3, les règles liées aux profils sont regroupées dans `StrategieProfil` et celles liées aux types de logement dans `StrategieLoyerType`.
