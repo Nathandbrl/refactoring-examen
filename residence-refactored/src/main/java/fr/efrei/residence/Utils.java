@@ -6,6 +6,8 @@ import java.util.Locale;
 
 public class Utils {
 
+    private static final double CENTIMES_PAR_EURO = 100.0;
+
     public static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     public static String date(LocalDate d) {
@@ -18,7 +20,7 @@ public class Utils {
     }
 
     public static double arrondir(double x) {
-        return Math.round(x * 100.0) / 100.0;
+        return Math.round(x * CENTIMES_PAR_EURO) / CENTIMES_PAR_EURO;
     }
 
     public static boolean emailValide(String email) {

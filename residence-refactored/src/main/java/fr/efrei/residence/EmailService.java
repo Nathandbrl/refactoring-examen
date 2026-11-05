@@ -3,7 +3,7 @@ package fr.efrei.residence;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmailService {
+public class EmailService implements CanalNotificationService {
 
     public static final String SMTP_HOST = "smtp.campusvert.fr";
     public static final String EXPEDITEUR = "gestion@campusvert.fr";
@@ -23,5 +23,17 @@ public class EmailService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public void notifier(Etudiant etudiant, String sujet, String message) {
+        envoyer(etudiant.getEmail(), sujet, message);
+    }
+
+    @Override
+    public void relancerImpayes(Etudiant etudiant, Bail bail) {
+        envoyer(etudiant.getEmail(), "RELANCE - loyer impayé",
+                "Bonjour " + etudiant.getPrenom() + ", il reste " + Utils.euros(bail.soldeDu)
+                        + " à régler sur le bail " + bail.getId() + ".");
     }
 }

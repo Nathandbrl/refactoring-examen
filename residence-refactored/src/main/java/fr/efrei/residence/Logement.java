@@ -2,14 +2,17 @@ package fr.efrei.residence;
 
 public abstract class Logement implements ILogement {
 
+    private static final int ETAGE_REZ_DE_CHAUSSEE = 0;
+    private static final String BATIMENT_AVEC_ASCENSEUR = "A";
+
     protected String numero;
-    protected String type;
+    protected TypeLogementInterne type;
     protected double surface;
     protected int etage;
     protected boolean meuble;
     protected Etudiant occupant;
 
-    public Logement(String numero, String type, double surface, int etage, boolean meuble) {
+    public Logement(String numero, TypeLogementInterne type, double surface, int etage, boolean meuble) {
         this.numero = numero;
         this.type = type;
         this.surface = surface;
@@ -18,7 +21,7 @@ public abstract class Logement implements ILogement {
     }
 
     public String getNumero() { return numero; }
-    public String getType() { return type; }
+    public TypeLogementInterne getType() { return type; }
     public double getSurface() { return surface; }
     public int getEtage() { return etage; }
     public boolean isMeuble() { return meuble; }
@@ -30,7 +33,7 @@ public abstract class Logement implements ILogement {
 
     public boolean estAccessiblePMR() {
         // seul le bâtiment A a un ascenseur
-        return etage == 0 || numero.startsWith("A");
+        return etage == ETAGE_REZ_DE_CHAUSSEE || numero.startsWith(BATIMENT_AVEC_ASCENSEUR);
     }
 
     public void loger(Etudiant e) {

@@ -9,7 +9,7 @@ public interface ILogement {
 
     String getNumero();
 
-    String getType();
+    TypeLogementInterne getType();
 
     double getSurface();
 
