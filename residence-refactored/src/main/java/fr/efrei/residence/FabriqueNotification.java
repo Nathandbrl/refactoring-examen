@@ -16,6 +16,8 @@ public class FabriqueNotification {
                 return new SmsService(historique);
             case COURRIER:
                 return new CourrierService(historique);
+            case PUSH:
+                return new PushService(historique);
             default:
                 throw new IllegalArgumentException("Canal de notification non pris en charge : " + canal);
         }

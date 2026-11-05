@@ -8,6 +8,8 @@ class CompteursOccupation {
     private int t1Occupes;
     private int t2;
     private int t2Occupes;
+    private int duplex;
+    private int duplexOccupes;
     private int placesColocation;
     private int placesColocationOccupees;
 
@@ -26,6 +28,11 @@ class CompteursOccupation {
         if (occupe) t2Occupes++;
     }
 
+    void ajouterDuplex(boolean occupe) {
+        duplex++;
+        if (occupe) duplexOccupes++;
+    }
+
     void ajouterColocation(int places, int placesOccupees) {
         placesColocation += places;
         placesColocationOccupees += placesOccupees;
@@ -37,6 +44,9 @@ class CompteursOccupation {
     int t1Occupes() { return t1Occupes; }
     int t2() { return t2; }
     int t2Occupes() { return t2Occupes; }
+    int totalLogements() { return studios + t1 + t2 + duplex + placesColocation; }
+    int totalOccupes() { return studiosOccupes + t1Occupes + t2Occupes + duplexOccupes
+            + placesColocationOccupees; }
     int placesColocation() { return placesColocation; }
     int placesColocationOccupees() { return placesColocationOccupees; }
 }

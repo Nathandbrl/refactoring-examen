@@ -8,7 +8,8 @@ public class FabriqueStrategieProfil {
             ProfilEtudiant.STANDARD, new StrategieStandard(),
             ProfilEtudiant.BOURSIER, new StrategieBoursier(),
             ProfilEtudiant.ALTERNANT, new StrategieAlternant(),
-            ProfilEtudiant.INTERNATIONAL, new StrategieInternational());
+            ProfilEtudiant.INTERNATIONAL, new StrategieInternational(),
+            ProfilEtudiant.SPORTIF, new StrategieSportif());
 
     public StrategieProfil creer(ProfilEtudiant profil) {
         StrategieProfil strategie = STRATEGIES.get(profil);

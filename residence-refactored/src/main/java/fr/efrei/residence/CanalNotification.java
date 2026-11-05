@@ -1,5 +1,5 @@
 package fr.efrei.residence;
 
 public enum CanalNotification {
-    EMAIL, SMS, COURRIER
+    EMAIL, SMS, COURRIER, PUSH
 }

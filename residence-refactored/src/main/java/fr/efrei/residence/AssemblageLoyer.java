@@ -42,6 +42,9 @@ public class AssemblageLoyer {
         if (options.contains(OptionLogement.ASSURANCE)) {
             loyer = new DecorateurAssurance(loyer);
         }
+        if (options.contains(OptionLogement.LOCAL_VELO)) {
+            loyer = new DecorateurLocalVelo(loyer);
+        }
         loyer = new DecorateurRemiseProfil(loyer, strategieProfil, echelonBourse);
 
         return Utils.arrondir(loyer.montant());

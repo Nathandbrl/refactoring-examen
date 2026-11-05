@@ -1,5 +1,5 @@
 package fr.efrei.residence;
 
 public enum ProfilEtudiant {
-    STANDARD, BOURSIER, ALTERNANT, INTERNATIONAL
+    STANDARD, BOURSIER, ALTERNANT, INTERNATIONAL, SPORTIF
 }

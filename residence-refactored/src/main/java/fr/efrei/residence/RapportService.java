@@ -40,10 +40,8 @@ public class RapportService {
         rapport += "T2           : " + compteurs.t2Occupes() + "/" + compteurs.t2() + "\n";
         rapport += "Colocation   : " + compteurs.placesColocationOccupees() + "/"
                 + compteurs.placesColocation() + " places" + "\n";
-        int total = compteurs.studios() + compteurs.t1() + compteurs.t2() + compteurs.placesColocation();
-        int occupes = compteurs.studiosOccupes() + compteurs.t1Occupes() + compteurs.t2Occupes()
-                + compteurs.placesColocationOccupees();
-        rapport += "Occupation   : " + Math.round(occupes * CENT_POUR_CENT / total) + " %" + "\n";
+        rapport += "Occupation   : "
+                + Math.round(compteurs.totalOccupes() * CENT_POUR_CENT / compteurs.totalLogements()) + " %" + "\n";
         rapport += "Balcons      : " + surfaceBalcons + " m²" + "\n";
 
         double loyersMensuels = 0;

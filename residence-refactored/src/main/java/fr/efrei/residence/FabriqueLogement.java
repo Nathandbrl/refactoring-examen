@@ -13,7 +13,9 @@ public class FabriqueLogement {
             TypeLogementInterne.T2, T2::new,
             TypeLogementInterne.COLOCATION, (numero, surface, etage, meuble, parametre) ->
                     new Colocation(numero, surface, etage, meuble,
-                            Math.max(parametre, PLACES_COLOCATION_MIN)));
+                            Math.max(parametre, PLACES_COLOCATION_MIN)),
+            TypeLogementInterne.DUPLEX, (numero, surface, etage, meuble, parametre) ->
+                    new Duplex(numero, surface, etage, meuble));
 
     public Logement creer(TypeLogementInterne type, String numero, double surface, int etage, boolean meuble,
                           int parametre) {

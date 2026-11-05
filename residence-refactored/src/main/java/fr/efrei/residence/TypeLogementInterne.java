@@ -3,7 +3,7 @@ package fr.efrei.residence;
 import java.util.Optional;
 
 public enum TypeLogementInterne {
-    STUDIO, T1, T2, COLOCATION;
+    STUDIO, T1, T2, COLOCATION, DUPLEX;
 
     public static Optional<TypeLogementInterne> depuisCode(String code) {
         try {

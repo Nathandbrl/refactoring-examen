@@ -8,7 +8,8 @@ public class FabriqueStrategieLoyer {
             TypeLogementInterne.STUDIO, new StrategieLoyerStudio(),
             TypeLogementInterne.T1, new StrategieLoyerT1(),
             TypeLogementInterne.T2, new StrategieLoyerT2(),
-            TypeLogementInterne.COLOCATION, new StrategieLoyerColocation());
+            TypeLogementInterne.COLOCATION, new StrategieLoyerColocation(),
+            TypeLogementInterne.DUPLEX, new StrategieLoyerDuplex());
 
     public StrategieLoyerType creer(TypeLogementInterne type) {
         StrategieLoyerType strategie = STRATEGIES.get(type);
