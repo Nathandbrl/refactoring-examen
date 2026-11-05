@@ -2,11 +2,19 @@ package fr.efrei.residence;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Le parc de logements de la résidence.
  */
 public class Residence {
+
+    private static final int INDEX_TYPE = 0;
+    private static final int INDEX_NUMERO = 1;
+    private static final int INDEX_SURFACE = 2;
+    private static final int INDEX_ETAGE = 3;
+    private static final int INDEX_MEUBLE = 4;
+    private static final int INDEX_PARAMETRE = 5;
 
     public static final String NOM = "Résidence Campus Vert";
 
@@ -29,28 +37,32 @@ public class Residence {
         logements.clear();
         for (String ligne : CATALOGUE) {
             String[] t = ligne.split(";");
-            String type = t[0];
-            String numero = t[1];
-            double surface = Double.parseDouble(t[2]);
-            int etage = Integer.parseInt(t[3]);
-            boolean meuble = Boolean.parseBoolean(t[4]);
-            int param = Integer.parseInt(t[5]);
+            Optional<TypeLogementInterne> type = TypeLogementInterne.depuisCode(t[INDEX_TYPE]);
+            String numero = t[INDEX_NUMERO];
+            double surface = Double.parseDouble(t[INDEX_SURFACE]);
+            int etage = Integer.parseInt(t[INDEX_ETAGE]);
+            boolean meuble = Boolean.parseBoolean(t[INDEX_MEUBLE]);
+            int param = Integer.parseInt(t[INDEX_PARAMETRE]);
+            if (type.isEmpty()) {
+                System.out.println("Type inconnu ignoré : " + t[INDEX_TYPE]);
+                continue;
+            }
             Logement l;
-            switch (type) {
-                case "STUDIO":
+            switch (type.get()) {
+                case STUDIO:
                     l = new Studio(numero, surface, etage, meuble);
                     break;
-                case "T1":
+                case T1:
                     l = new T1(numero, surface, etage, meuble);
                     break;
-                case "T2":
+                case T2:
                     l = new T2(numero, surface, etage, meuble, param);
                     break;
-                case "COLOCATION":
+                case COLOCATION:
                     l = new Colocation(numero, surface, etage, meuble, param);
                     break;
                 default:
-                    System.out.println("Type inconnu ignoré : " + type);
+                    System.out.println("Type inconnu ignoré : " + type.get());
                     continue;
             }
             logements.add(l);
